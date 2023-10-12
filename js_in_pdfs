@@ -36,14 +36,15 @@ def contains_external_references(pdf_path, exclusion_keywords):
     return findings
 
 def select_files_and_check():
-    keywords = simpledialog.askstring("Input", "Enter keywords of url to exclude separated by commas:", parent=root)
+    keywords = simpledialog.askstring("Input", "Enter keywords of urls to exclude separated by commas:", parent=root)
     if not keywords:
         return
     keywords = [k.strip() for k in keywords.split(",")]
     
     results = []
     root.withdraw()
-    file_paths = filedialog.askopenfilenames(initialdir='~/Documents/libri/', title="Select PDF files", filetypes=(("PDF files", "*.pdf"), ("All files", "*.*")))
+    # customize initialdir with your own dir
+    file_paths = filedialog.askopenfilenames(initialdir='~/Documents/', title="Select PDF files", filetypes=(("PDF files", "*.pdf"), ("All files", "*.*")))
     
     if not file_paths:
         return
