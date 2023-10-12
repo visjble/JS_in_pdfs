@@ -43,5 +43,3 @@ This tool provides a simple GUI interface to inspect PDF files for potential ext
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ---
-
-You can now add this `README.md` to the root of your GitHub repository for the project. Adjustments can be made as needed to fit the context or other specific information about the tool.
