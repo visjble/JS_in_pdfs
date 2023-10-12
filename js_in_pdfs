@@ -1,0 +1,91 @@
+import fitz
+import tkinter as tk
+from tkinter import filedialog, scrolledtext
+from tkinter import simpledialog
+
+def insert_with_color(text_widget, text, color='black'):
+    """Insert text into the ScrolledText widget with the specified color."""
+    tag_name = f"color_{color}"
+    text_widget.tag_configure(tag_name, foreground=color)
+    text_widget.insert(tk.INSERT, text, tag_name)
+
+def contains_external_references(pdf_path, exclusion_keywords):
+    doc = fitz.open(pdf_path)
+    findings = []
+
+    # Extract and Check for JavaScript
+    for i in range(doc.xref_length()):
+        obj = doc.xref_object(i)
+        if obj and ("/JS" in obj or "/JavaScript" in obj):
+            findings.append("Detected embedded JavaScript:")
+            findings.append(obj)
+
+    # Check for links and exclude those with specified keywords in their text
+    for page in doc:
+        for link in page.get_links():
+            if "rect" in link:
+                link_text = page.get_text("text", clip=link["rect"])
+                if not any(keyword.lower() in link_text.lower() for keyword in exclusion_keywords):
+                    findings.append(f"Link text: '{link_text.strip()}' pointing to {link['uri']}")
+
+        # Check for form actions
+        for annot in page.annots():
+            if annot.type[1] == 'Widget' and 'A' in annot.info and 'S' in annot.info['A'] and annot.info['A']['S'] == 'SubmitForm':
+                findings.append("Detected form submission action.")
+
+    return findings
+
+def select_files_and_check():
+    keywords = simpledialog.askstring("Input", "Enter keywords of url to exclude separated by commas:", parent=root)
+    if not keywords:
+        return
+    keywords = [k.strip() for k in keywords.split(",")]
+    
+    results = []
+    root.withdraw()
+    file_paths = filedialog.askopenfilenames(initialdir='~/Documents/libri/', title="Select PDF files", filetypes=(("PDF files", "*.pdf"), ("All files", "*.*")))
+    
+    if not file_paths:
+        return
+    
+    result_window = tk.Toplevel(root)
+    result_display = scrolledtext.ScrolledText(result_window, wrap=tk.WORD, width=60, height=20)
+    result_display.pack(padx=20, pady=20)
+
+    for pdf_path in file_paths:
+        findings = contains_external_references(pdf_path, keywords)  # Ensure keywords is provided here
+        if findings:
+            insert_with_color(result_display, f"PDF {pdf_path} findings:\n", 'red')
+            for finding in findings:
+                insert_with_color(result_display, f"{finding}\n", 'red')
+            result_display.insert(tk.INSERT, "-----------\n")
+        else:
+            pass
+            # result_display.insert(tk.INSERT, f"The PDF {pdf_path} does not contain detected external references.\n")
+        
+    # Inside the select_files_and_check function, after displaying the findings:
+    save_btn = tk.Button(result_window, text="Save Results", command=lambda: save_results(result_display))
+    save_btn.pack(pady=20, side=tk.LEFT)
+
+    # Quit button for the results window
+    quit_result_btn = tk.Button(result_window, text="Quit", command=result_window.destroy)
+    quit_result_btn.pack(pady=20)
+
+def save_results(text_widget):
+    file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                             filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    if not file_path:
+        return
+    with open(file_path, 'w') as file:
+        file.write(text_widget.get("1.0", tk.END))
+
+root = tk.Tk()
+root.title("Check PDF for External References")
+
+btn = tk.Button(root, text="Select PDFs", command=select_files_and_check)
+btn.pack(pady=20)
+
+quit_btn = tk.Button(root, text="Quit", command=root.destroy)
+quit_btn.pack(pady=20)
+
+root.mainloop()
