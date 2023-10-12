@@ -38,6 +38,26 @@ This tool provides a simple GUI interface to inspect PDF files for potential ext
 - [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/)
 - [Tkinter](https://docs.python.org/3/library/tkinter.html) (Standard library in Python)
 
+## False positives
+Embedded fonts will trigger fals positive if the string JS appears. ex:
+  ```
+Detected embedded JavaScript:
+<<
+  /Type /FontDescriptor
+  /FontName /JSNCUQ+font351
+  /FontFamily (font351)
+  /Flags 32
+  /FontBBox [ 0 -206 2000 792 ]
+  /ItalicAngle 0
+  /Ascent 792
+  /Descent -206
+  /CapHeight 792
+  /StemV 80
+  /StemH 80
+  /FontFile2 5108 0 R
+>>
+```
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
