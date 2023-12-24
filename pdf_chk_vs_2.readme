@@ -1,0 +1,44 @@
+
+
+# PDF Analysis Script
+
+## Overview
+This Python script is designed for comprehensive analysis of PDF files. It extracts various data points like external references, IP addresses, URLs, potential font obfuscations, and document-specific actions. This tool is particularly useful in scenarios where detailed inspection of PDF files is required, such as security analysis, data extraction, or content validation.
+
+## Features
+- **External Reference Analysis**: Extracts external links and annotations from PDF files.
+- **IP and URL Detection**: Identifies IP addresses and URLs within the text of the PDF.
+- **Font Obfuscation Check**: Checks for potential font obfuscation, a technique often used in malicious documents.
+- **Action Extraction**: Extracts and lists specific actions embedded within the PDF.
+- **MD5 Checksum Calculation**: Generates MD5 checksums for PDF files for integrity verification.
+
+## Required Modules
+- `fitz` (PyMuPDF): For handling and analyzing PDF files.
+- `hashlib`: For generating MD5 checksums.
+- `re`: For regular expression operations in IP and URL detection.
+- `os`: For file and directory operations.
+
+## Functions
+- **get_file_or_directory_path**: Prompts the user to input a file or directory path for analysis.
+- **calculate_md5**: Calculates the MD5 checksum of a given file for verification purposes.
+- **find_ip_addresses**: Detects and extracts IP addresses from the text using regular expressions.
+- **find_urls**: Identifies and extracts URLs from the text.
+- **extract_actions_from_pdf**: Extracts specific actions (like JavaScript or GoTo actions) embedded within the PDF.
+- **check_for_font_obfuscation**: Looks for potential font obfuscation techniques used in the PDF.
+- **contains_external_references**: Consolidates the external references, IP addresses, and URLs found in the PDF.
+- **analyze_path**: Main function that orchestrates the analysis of files or directories containing PDFs.
+- **handle_results**: Handles and displays the findings from the analysis.
+- **save_findings_to_file**: Offers the user the option to save the findings to a text file.
+
+## Installation
+1. Clone the repository.
+2. Install required Python modules: `pip install PyMuPDF`
+3. Run the script: `python pdf_analysis_script.py`
+
+## Usage
+Run the script and follow the on-screen prompts to analyze a specific PDF file or all PDF files within a directory. 
+The script will display its findings and offer the option to save the results.
+
+---
+
+This README provides a clear and concise overview of your script's functionality, making it easier for users to understand and use your tool. You can add more sections as needed, such as 'Contribution Guidelines', 'License', or 'Acknowledgments', depending on your project's scope and requirements.
